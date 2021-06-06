@@ -1,0 +1,13 @@
+[package]
+name = "scrabble_bevy"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy", features = ["dynamic"]  }
+ron = "0.6.4"
+serde = "1.0.126"
+bevy_prototype_lyon = { git = "https://github.com/Nilirad/bevy_prototype_lyon" }
+anyhow = "1.0"

@@ -1,0 +1,111 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Run `cargo test` in watch mode",
+        "detail": "Requires \"cargo watch\" subcommand: https://github.com/passcod/cargo-watch",
+        "group": "test",
+        "type": "process",
+        "command": "cargo",
+        "args": ["watch", "-x", "test --no-fail-fast"],
+        "isBackground": true,
+        "problemMatcher": [
+          {
+            "owner": "rust",
+            "severity": "error",
+            "fileLocation": ["relative", "${workspaceRoot}"],
+            "background": {
+              "beginsPattern": "^\\[Running '.*'\\]$",
+              "endsPattern": "^\\[Finished running. Exit status: \\d+\\]$"
+            },
+            "pattern": {
+              "regexp": "^.*panicked\\s+at\\s+'(.*)',\\s+(.*):(\\d+):(\\d+)$",
+              "message": 1,
+              "file": 2,
+              "line": 3,
+              "column": 4
+            }
+          },
+          {
+            "owner": "rust",
+            "severity": "error",
+            "fileLocation": ["relative", "${workspaceRoot}"],
+            "background": {
+              "beginsPattern": "^\\[Running '.*'\\]$",
+              "endsPattern": "^\\[Finished running. Exit status: \\d+\\]$"
+            },
+            "pattern": [
+              {
+                "regexp": ".*panicked\\s+at\\s+'(.*)",
+                "message": 1
+              },
+              {
+                "regexp": "^.*$",
+                "message": 0
+              },
+              {
+                "regexp": "^(.*)', (\\S*):(\\d+):(\\d+)$",
+                "message": 1,
+                "file": 2,
+                "line": 3,
+                "column": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Run `cargo run` in watch mode",
+        "detail": "Requires \"cargo watch\" subcommand: https://github.com/passcod/cargo-watch",
+        "group": "build",
+        "type": "process",
+        "command": "cargo",
+        "args": ["watch", "-x", "run"],
+        "isBackground": true,
+        "problemMatcher": [
+          {
+            "owner": "rust",
+            "severity": "error",
+            "fileLocation": ["relative", "${workspaceRoot}"],
+            "background": {
+              "beginsPattern": "^\\[Running '.*'\\]$",
+              "endsPattern": "^\\[Finished running. Exit status: \\d+\\]$"
+            },
+            "pattern": {
+              "regexp": "^.*panicked\\s+at\\s+'(.*)',\\s+(.*):(\\d+):(\\d+)$",
+              "message": 1,
+              "file": 2,
+              "line": 3,
+              "column": 4
+            }
+          },
+          {
+            "owner": "rust",
+            "severity": "error",
+            "fileLocation": ["relative", "${workspaceRoot}"],
+            "background": {
+              "beginsPattern": "^\\[Running '.*'\\]$",
+              "endsPattern": "^\\[Finished running. Exit status: \\d+\\]$"
+            },
+            "pattern": [
+              {
+                "regexp": ".*panicked\\s+at\\s+'(.*)",
+                "message": 1
+              },
+              {
+                "regexp": "^.*$",
+                "message": 0
+              },
+              {
+                "regexp": "^(.*)', (\\S*):(\\d+):(\\d+)$",
+                "message": 1,
+                "file": 2,
+                "line": 3,
+                "column": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
