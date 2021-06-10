@@ -11,8 +11,8 @@ pub struct MountainPlugin;
 
 impl Plugin for MountainPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_system(mountain_spawn_system.system())
-            .insert_resource(MountainTimer(Timer::from_seconds(3.0, true)));
+        app.insert_resource(MountainTimer(Timer::from_seconds(3.0, true)))
+            .add_system(mountain_spawn_system.system());
     }
 }
 
@@ -33,7 +33,7 @@ fn mountain_spawn_system(
                 transform: Transform {
                     translation: Vec3::new(1920.0 * 0.5 + 30.0 * 43.0, -1280.0 * 0.5, 0.2),
                     rotation: Quat::IDENTITY,
-                    scale: Vec3::new(3.0, 3.0, 3.0),
+                    scale: Vec3::splat(3.0),
                 },
                 material: materials.add(ColorMaterial::modulated_texture(
                     mountain_texture,
@@ -43,13 +43,13 @@ fn mountain_spawn_system(
             })
             .insert(OffsceenDeletion)
             .insert(Velocity(Vec2::new(-200.0, 0.0)));
-            
+
         commands
             .spawn_bundle(SpriteBundle {
                 transform: Transform {
                     translation: Vec3::new(1920.0 * 0.5 + 30.0 * 43.0, -1280.0 * 0.5 - 100.0, 0.3),
                     rotation: Quat::IDENTITY,
-                    scale: Vec3::new(3.0, 3.0, 3.0),
+                    scale: Vec3::splat(3.0),
                 },
                 material: materials.add(ColorMaterial::modulated_texture(
                     mountain_texture2,

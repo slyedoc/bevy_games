@@ -5,18 +5,16 @@ use bevy::{
 };
 
 use crate::animation;
+use crate::game_state;
 use crate::gamedata;
-use crate::gamestate;
 use crate::physics;
 use crate::pipes;
-use crate::screens;
 
 use animation::*;
+use game_state::*;
 use gamedata::*;
-use gamestate::*;
 use physics::*;
 use pipes::*;
-use screens::*;
 
 pub struct Player;
 pub struct JumpHeight(pub f32);
@@ -36,12 +34,16 @@ pub enum BirdMovement {
     Input,
 }
 
-
 impl Plugin for BirdPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_event::<GameOverEvent>()
-            .add_startup_system(spawn_bird.system())
-            .add_system(player_input.system().label(BirdMovement::Input))
+            .add_system_set(
+                SystemSet::on_enter(GameState::Playing).with_system(bird_setup.system()),
+            )
+            .add_system_set(
+                SystemSet::on_update(GameState::Playing).with_system(bird_input_playing.system()),
+            )
+            .add_system_set(SystemSet::on_exit(GameState::Playing).with_system(bird_exit.system()))
             .add_system(player_bounds_system.system().after(BirdMovement::Input))
             .add_system(player_collision_system.system().label(BirdMovement::Input))
             .add_system(velocity_rotator_system.system().label(BirdMovement::Input))
@@ -50,52 +52,40 @@ impl Plugin for BirdPlugin {
     }
 }
 
-fn player_input(
-    game_data: Res<GameData>,
+
+
+fn bird_input_playing(
     jump_height: Res<JumpHeight>,
     keyboard_input: Res<Input<KeyCode>>,
-    mut query: Query<(& Transform, &mut Velocity, With<Player>)>
+    mut query: Query<(&mut Velocity, With<Player>)>,
 ) {
-    for (transform, mut velocity, _) in query.iter_mut() {
-        match game_data.game_state {
-            GameState::Menu => {
-                // Stay in screen
-                // Auto jump until input is given
-                if transform.translation.y < 0.0 {
-                    velocity.0.y = jump_height.0;
-                }
-            }
-            GameState::Playing => {
-                // Handle Jump
-                if keyboard_input.just_pressed(KeyCode::Space) {
-                    velocity.0.y = jump_height.0;
-                }
-            }
-            GameState::Dead => {}
+    for (mut velocity, _) in query.iter_mut() {
+        // Handle Jump
+        if keyboard_input.just_pressed(KeyCode::Space) {
+            velocity.0.y = jump_height.0;
         }
     }
 }
 
 struct GameOverEvent;
 
-
 fn player_bounds_system(
     mut query: Query<(&Player, &mut Transform, &mut Velocity)>,
     mut game_over_writer: EventWriter<GameOverEvent>,
 ) {
-     let half_screen_size = 1280.0 * 0.5;
-     let player_size = 32.0 * 6.0;
-     for (_p, mut transform, mut velocity) in query.iter_mut() {
-         // bounce against ceiling
-         if transform.translation.y > half_screen_size - player_size {
-             velocity.0.y = -3.0;
-             transform.translation.y = half_screen_size - player_size;
-         }
-         // death on bottom touch
-         if transform.translation.y < -half_screen_size {
-             game_over_writer.send(GameOverEvent);
-         }
-     }
+    let half_screen_size = 1280.0 * 0.5;
+    let player_size = 32.0 * 6.0;
+    for (_p, mut transform, mut velocity) in query.iter_mut() {
+        // bounce against ceiling
+        if transform.translation.y > half_screen_size - player_size {
+            velocity.0.y = -3.0;
+            transform.translation.y = half_screen_size - player_size;
+        }
+        // death on bottom touch
+        if transform.translation.y < -half_screen_size {
+            game_over_writer.send(GameOverEvent);
+        }
+    }
 }
 
 fn player_collision_system(
@@ -156,31 +146,11 @@ fn player_collision_system(
     }
 }
 
-fn game_over(
-    mut commands: Commands,
-    mut game_data:  ResMut<GameData>,
-    mut reader: EventReader<GameOverEvent>,
-    pipe_query: Query<(&Pipe, &Transform, &Collider, &Sprite, Entity)>,
-    score_query: Query<(&Transform, &Collider, Entity)>,
-    mut end_screen_query: Query<(&EndScreen, &mut Visible)>,
-) {
-
+fn game_over(mut state: ResMut<State<GameState>>, mut reader: EventReader<GameOverEvent>) {
     for _ in reader.iter() {
-         game_data.game_state = GameState::Dead;
-         game_data.score = 0;
-         // Despawn all pipes
-         for (_p, _pt, _c, _ps, pipe_entity) in pipe_query.iter() {
-             commands.entity(pipe_entity).despawn();
-         }
-         // Despawn score colliders
-         for (_t, collider, score_entity) in score_query.iter() {
-             if *collider == Collider::ScoreGiver {
-                 commands.entity(score_entity).despawn();
-             }
-         }
-         for (_es, mut vis) in &mut end_screen_query.iter_mut() {
-             vis.is_visible = true;
-         }
+        if *state.current() != GameState::Dead {
+            state.set(GameState::Dead).unwrap();
+        }
     }
 }
 
@@ -211,7 +181,7 @@ fn velocity_animator_system(mut query: Query<(&mut Animations, &Velocity)>) {
     }
 }
 
-pub fn spawn_bird(
+pub fn bird_setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
@@ -224,7 +194,7 @@ pub fn spawn_bird(
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             transform: Transform {
-                scale: Vec3::splat(6.0),
+                scale: Vec3::splat(3.0),
                 translation: Vec3::new(0.0, 0.0, 100.0),
                 rotation: Quat::IDENTITY,
             },
@@ -279,4 +249,10 @@ pub fn spawn_bird(
             ],
             current_animation: 0,
         });
+}
+
+pub fn bird_exit(mut commands: Commands, mut q: Query<(Entity, With<Player>)>) {
+    for (e, _) in q.iter_mut() {
+        commands.entity(e).despawn();
+    }
 }

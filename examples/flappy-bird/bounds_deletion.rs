@@ -17,7 +17,7 @@ fn offscreen_remove_system(
     let padding = 300.0;
     for (entity, trans, _od) in &mut pipe_query.iter_mut() {
         // Left side of screen
-        if trans.translation.x < -1920.0 * 0.5 - padding { 
+        if trans.translation.x < -1920.0 * 0.5 - padding {
             commands.entity(entity).despawn();
         }
     }
