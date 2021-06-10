@@ -1,6 +1,8 @@
 use crate::physics;
+use crate::game_state;
 use bevy::{prelude::*, utils::Duration};
 use physics::*;
+use game_state::*;
 use rand::{thread_rng, Rng};
 
 pub struct CloudTimer(Timer);
@@ -9,8 +11,11 @@ pub struct CloudPlugin;
 
 impl Plugin for CloudPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_system(cloud_spawn_system.system())
-            .insert_resource(CloudTimer(Timer::from_seconds(1.0, true)));
+        app
+            .insert_resource(CloudTimer(Timer::from_seconds(1.0, true)))
+            .add_system_set(
+                SystemSet::on_update(GameState::Playing).with_system(cloud_spawn_system.system()),
+            );
     }
 }
 

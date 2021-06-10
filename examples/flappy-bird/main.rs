@@ -54,12 +54,12 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d(  ));
     commands.spawn_bundle(UiCameraBundle::default());
 }
 
 fn menu_setup(
-    mut commands: Commands,
+    mut commands: Commands,  
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
@@ -86,49 +86,49 @@ fn menu_exit(mut commands: Commands, mut q: Query<(Entity, With<MenuScreen>)>) {
     }
 }
 
-struct ScoreText;
-
 fn playing_setup(
     mut commands: Commands,
+    mut gamedata: ResMut<GameData>,
     asset_server: Res<AssetServer>,
-    gamedata: Res<GameData>,
 ) {
 
+    gamedata.score = 0;
 
-    commands.spawn_bundle(Text2dBundle {
-        text: Text::with_section(
-            "Score",
-            TextStyle {
-                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                font_size: 60.0,
-                color: Color::WHITE,
+    commands.spawn_bundle(TextBundle {
+        style: Style {
+            align_self: AlignSelf::FlexEnd,
+            position_type: PositionType::Absolute,
+            position: Rect {
+                bottom: Val::Px(5.0),
+                right: Val::Px(15.0),
+                ..Default::default()
             },
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            },
-        ),
+            ..Default::default()
+        },
+        text: Text {
+            sections: vec![
+                TextSection {
+                    value: "Score: ".to_string(),
+                    style: TextStyle {
+                        font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
+                        font_size: 50.0,
+                        color: Color::WHITE,
+                    },
+                },
+                TextSection {
+                    value: "0".to_string(),
+                    style: TextStyle {
+                        font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
+                        font_size: 60.0,
+                        color: Color::YELLOW,
+                    },
+                }
+            ],
+            ..Default::default()
+        },
         ..Default::default()
     })
-    .insert(MenuScreen);
-
-    commands.spawn_bundle(Text2dBundle {
-        text: Text::with_section(
-            gamedata.score.to_string(),
-            TextStyle {
-                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                font_size: 60.0,
-                color: Color::WHITE,
-            },
-            TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Center,
-            },
-        ),
-        ..Default::default()
-    })
-    .insert(MenuScreen)
-    .insert(ScoreText);
+    .insert(PlayingScreen);
 
 }
 
@@ -136,19 +136,20 @@ fn playing_input(
     keyboard_input: Res<Input<KeyCode>>,
     gamedata: Res<GameData>,
     mut state: ResMut<State<GameState>>,
-    mut q: Query<(&mut Text, With<ScoreText> )>,
+    mut q: Query<(&mut Text, With<PlayingScreen> )>,
 ) {
 
-    if keyboard_input.pressed(KeyCode::Escape) {
+    if keyboard_input.just_pressed(KeyCode::Escape) {
         state.set(GameState::Menu).unwrap();
     }
 
+    // Update Score
     for (mut text, _) in q.iter_mut() {
-        text.sections[0].value = format!("{:.2}", gamedata.score );
+        text.sections[1].value = format!("{:.2}", gamedata.score );
     }
 }
 
-fn playing_exit(mut commands: Commands, mut q: Query<(Entity, With<DeadScreen>)>) {
+fn playing_exit(mut commands: Commands, mut q: Query<(Entity, With<PlayingScreen>)>) {
     for (e, _) in q.iter_mut() {
         commands.entity(e).despawn();
     }
@@ -157,6 +158,7 @@ fn playing_exit(mut commands: Commands, mut q: Query<(Entity, With<DeadScreen>)>
 fn dead_setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    gamedata: Res<GameData>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     let game_over_texture_handle = asset_server.load("GameOverText.png");
@@ -170,10 +172,46 @@ fn dead_setup(
             ..Default::default()
         })
         .insert(DeadScreen);
+
+        commands.spawn_bundle(TextBundle {
+            style: Style {
+                align_self: AlignSelf::FlexEnd,
+                position_type: PositionType::Absolute,
+                position: Rect {
+                    bottom: Val::Px(5.0),
+                    right: Val::Px(15.0),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            text: Text {
+                sections: vec![
+                    TextSection {
+                        value: "Final Score: ".to_string(),
+                        style: TextStyle {
+                            font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
+                            font_size: 60.0,
+                            color: Color::WHITE,
+                        },
+                    },
+                    TextSection {
+                        value: gamedata.score.to_string(),
+                        style: TextStyle {
+                            font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
+                            font_size: 60.0,
+                            color: Color::RED,
+                        },
+                    }
+                ],
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .insert(DeadScreen);
 }
 
 fn dead_input(keyboard_input: Res<Input<KeyCode>>, mut state: ResMut<State<GameState>>) {
-    if keyboard_input.pressed(KeyCode::Space) {
+    if keyboard_input.just_pressed(KeyCode::Space) {
         state.set(GameState::Playing).unwrap();
     }
 }

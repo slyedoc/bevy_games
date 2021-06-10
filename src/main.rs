@@ -1,25 +1,29 @@
 use bevy::{core::FixedTimestep, prelude::*};
 mod plugins;
-use plugins::*;
+use plugins::{
+    *,
+    fps::*,
+};
 
-const TIME_STEP: f32 = 1.0 / 60.0;
+//const TIME_STEP: f32 = 1.0 / 60.0;
 fn main() {
     App::build()
         .add_plugins(DefaultPlugins)
         .add_plugin(window_config::WindowConfigPlugin)
+        .add_plugin(FPSPlugin)
         .insert_resource(WindowDescriptor {
             title: "Patrick Rust Heaven".to_string(),
             ..Default::default()
         })
         .insert_resource(ClearColor(Color::rgb(0.1, 0.4, 0.4)))
         .add_startup_system(setup.system())
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(TIME_STEP as f64))
-                // .with_system(paddle_movement_system.system())
-                // .with_system(ball_collision_system.system())
-                // .with_system(ball_movement_system.system()),
-        )
+        // .add_system_set(
+        //     SystemSet::new()
+        //         .with_run_criteria(FixedTimestep::step(TIME_STEP as f64))
+        //         // .with_system(paddle_movement_system.system())
+        //         // .with_system(ball_collision_system.system())
+        //         // .with_system(ball_movement_system.system()),
+        // )
         .run();
 }
 
@@ -33,8 +37,8 @@ fn setup(
     // Add the game's entities to our world
 
     // cameras
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    //commands.spawn_bundle(UiCameraBundle::default());
+  commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+   //commands.spawn_bundle(UiCameraBundle::default());
 
     // board
     commands
@@ -45,4 +49,20 @@ fn setup(
             ..Default::default()
         })
         .insert(Board);
+
+        commands.spawn_bundle(Text2dBundle {
+            text: Text::with_section(
+                "This text is in the 2D scene.",
+                TextStyle {
+                    font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
+                    font_size: 60.0,
+                    color: Color::WHITE,
+                },
+                TextAlignment {
+                    vertical: VerticalAlign::Center,
+                    horizontal: HorizontalAlign::Center,
+                },
+            ),
+            ..Default::default()
+        });
 }

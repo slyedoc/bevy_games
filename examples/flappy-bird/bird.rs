@@ -115,14 +115,8 @@ fn player_collision_system(
             );
             if collision.is_some() {
                 game_data.score += 1;
-                println!("got score!: {}", game_data.score);
                 // Remove coin collider, quick simple solution
                 commands.entity(entity).despawn();
-                // for world in &mut worlds.iter() {
-                //     if !world.contains(entity) {
-                //         commands.despawn(entity);
-                //     }
-                // }
             }
         }
         // Check for collision
@@ -194,7 +188,7 @@ pub fn bird_setup(
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             transform: Transform {
-                scale: Vec3::splat(3.0),
+                scale: Vec3::splat(2.0),
                 translation: Vec3::new(0.0, 0.0, 100.0),
                 rotation: Quat::IDENTITY,
             },

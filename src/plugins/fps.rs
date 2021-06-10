@@ -7,7 +7,8 @@ pub struct FPSPlugin;
 
 impl Plugin for FPSPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_startup_system(setup.system())
+        app.add_plugin(FrameTimeDiagnosticsPlugin::default())
+        .add_startup_system(setup.system())
             .add_system(show_fps.system());
     }
 }
@@ -24,7 +25,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     TextSection {
                         value: "\nAverage FPS: ".to_string(),
                         style: TextStyle {
-                            font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                            font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
                             font_size: 40.0,
                             color: Color::rgb(0.0, 1.0, 0.0),
                         },
@@ -32,7 +33,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     TextSection {
                         value: "".to_string(),
                         style: TextStyle {
-                            font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                            font: asset_server.load("fonts/Roboto/Roboto-Bold.ttf"),
                             font_size: 40.0,
                             color: Color::rgb(0.0, 1.0, 1.0),
                         },
@@ -55,6 +56,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn show_fps(diagnostics: Res<Diagnostics>, mut query: Query<(&mut Text, &FPS)>) {
+    
     if let Some(fps) = diagnostics.get(FrameTimeDiagnosticsPlugin::FPS) {
         if let Some(average) = fps.average() {
             for (mut text, _) in query.iter_mut() {
