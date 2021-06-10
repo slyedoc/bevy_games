@@ -2,8 +2,6 @@ use bevy::{core::FixedTimestep, prelude::*};
 mod plugins;
 use plugins::*;
 
-
-
 const TIME_STEP: f32 = 1.0 / 60.0;
 fn main() {
     App::build()
@@ -27,7 +25,6 @@ fn main() {
 
 struct Board;
 
-
 fn setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -37,7 +34,7 @@ fn setup(
 
     // cameras
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands.spawn_bundle(UiCameraBundle::default());
+    //commands.spawn_bundle(UiCameraBundle::default());
 
     // board
     commands
@@ -48,39 +45,4 @@ fn setup(
             ..Default::default()
         })
         .insert(Board);
-
-    // scoreboard
-    commands.spawn_bundle(TextBundle {
-        text: Text {
-            sections: vec![
-                TextSection {
-                    value: "Score: ".to_string(),
-                    style: TextStyle {
-                        font: asset_server.load("fonts/Roboto/Roboto-Regular.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(0.5, 0.5, 1.0),
-                    },
-                },
-                TextSection {
-                    value: "".to_string(),
-                    style: TextStyle {
-                        font: asset_server.load("fonts/Roboto/Roboto-Medium.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(1.0, 0.5, 0.5),
-                    },
-                },
-            ],
-            ..Default::default()
-        },
-        style: Style {
-            position_type: PositionType::Absolute,
-            position: Rect {
-                top: Val::Px(5.0),
-                left: Val::Px(5.0),
-                ..Default::default()
-            },
-            ..Default::default()
-        },
-        ..Default::default()
-    });
 }

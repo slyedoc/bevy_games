@@ -5,10 +5,10 @@
 //! Create your custom asset types as follows:
 //!
 
-use bevy::prelude::*;
 use bevy::asset::{AssetLoader, LoadContext, LoadedAsset};
-use bevy::utils::BoxedFuture;
+use bevy::prelude::*;
 use bevy::reflect::TypeUuid;
+use bevy::utils::BoxedFuture;
 use serde::Deserialize;
 use std::marker::PhantomData;
 
@@ -25,7 +25,11 @@ where
         &self.extensions
     }
 
-    fn load<'a>(&'a self, bytes: &'a [u8], load_context: &'a mut LoadContext) -> BoxedFuture<'a, Result<(), anyhow::Error>> {
+    fn load<'a>(
+        &'a self,
+        bytes: &'a [u8],
+        load_context: &'a mut LoadContext,
+    ) -> BoxedFuture<'a, Result<(), anyhow::Error>> {
         Box::pin(async move {
             let loaded = ron::de::from_bytes::<T>(bytes)?;
             load_context.set_default_asset(LoadedAsset::new(loaded));
@@ -51,8 +55,7 @@ where
             extensions: self.extensions.clone(),
             _t: PhantomData,
         };
-        app.add_asset::<T>()
-            .add_asset_loader(loader);
+        app.add_asset::<T>().add_asset_loader(loader);
     }
 }
 
