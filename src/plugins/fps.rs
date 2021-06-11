@@ -8,7 +8,7 @@ pub struct FPSPlugin;
 impl Plugin for FPSPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_plugin(FrameTimeDiagnosticsPlugin::default())
-        .add_startup_system(setup.system())
+            .add_startup_system(setup.system())
             .add_system(show_fps.system());
     }
 }
@@ -16,8 +16,6 @@ impl Plugin for FPSPlugin {
 struct FPS;
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    //commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands.spawn_bundle(UiCameraBundle::default());
     commands
         .spawn_bundle(TextBundle {
             text: Text {
@@ -56,7 +54,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn show_fps(diagnostics: Res<Diagnostics>, mut query: Query<(&mut Text, &FPS)>) {
-    
     if let Some(fps) = diagnostics.get(FrameTimeDiagnosticsPlugin::FPS) {
         if let Some(average) = fps.average() {
             for (mut text, _) in query.iter_mut() {
