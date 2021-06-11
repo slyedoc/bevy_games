@@ -1,5 +1,5 @@
 mod menu;
 mod playing;
 
-pub use menu::MenuPlugin;
+pub use menu::*;
 pub use playing::PlayingPlugin;

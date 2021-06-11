@@ -12,7 +12,7 @@ pub struct GameData {
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 pub enum Player {
     White,
-    Black
+    Black,
 }
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]

@@ -38,8 +38,6 @@ impl Default for Data {
     }
 }
 
-
-
 pub fn text_update_system(data: Res<Data>, mut query: Query<&mut Text>) {
     for mut text in query.iter_mut() {
         let text = &mut text.sections[0];
