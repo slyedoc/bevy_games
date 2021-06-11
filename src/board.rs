@@ -1,54 +1,146 @@
+use crate::utils;
+use crate::game_state;
+use bevy::{
+    prelude::*,
+    math::*,
+};
+use utils::*;
+use game_state::*;
+
+
 pub struct BoardPlugin;
 
-impl Plugin for MountainPlugin {
+impl Plugin for BoardPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.insert_resource(MountainTimer(Timer::from_seconds(3.0, true)))
-            .add_system(mountain_spawn_system.system());
+        app
+        .insert_resource(BoardSize{ x: 19, y: 19 })
+        .add_startup_system(setup.system());
     }
 }
 
-fn mountain_spawn_system(
+#[derive(Clone, Eq, PartialEq, Debug, Hash)]
+struct BoardSize {
+    x: u8,
+    y: u8
+}
+
+enum BoardPart {
+    Background,
+    Cell{ x: u8, y: u8 },
+}
+
+fn setup(
     mut commands: Commands,
-    time: Res<Time>,
-    mut mountain_timer: ResMut<MountainTimer>,
     asset_server: Res<AssetServer>,
+    windows: Res<Windows>,
+    board_size: Res<BoardSize>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    mountain_timer.0.tick(time.delta());
-    if mountain_timer.0.finished() {
-        // TODO: find correct way to copy handle for "use after moved" error
-        let mountain_texture: Handle<Texture> = asset_server.load("mountain.png");
-        let mountain_texture2: Handle<Texture> = asset_server.load("mountain.png");
-        commands
-            .spawn_bundle(SpriteBundle {
-                transform: Transform {
-                    translation: Vec3::new(1920.0 * 0.5 + 30.0 * 43.0, -1280.0 * 0.5, 0.2),
-                    rotation: Quat::IDENTITY,
-                    scale: Vec3::splat(3.0),
-                },
-                material: materials.add(ColorMaterial::modulated_texture(
-                    mountain_texture,
-                    Color::rgb(0.36, 0.36, 0.36),
-                )),
-                ..Default::default()
-            })
-            .insert(OffsceenDeletion)
-            .insert(Velocity(Vec2::new(-200.0, 0.0)));
 
-        commands
-            .spawn_bundle(SpriteBundle {
+        let size: f32 = 500.;
+        let cell_size = Vec2::new( -size / board_size.x as f32 / 2., size / board_size.x as f32 / 2.);
+        let background_size = Vec2::new( -size + cell_size.x * 2., size + cell_size.y * 2.);
+        let board_trim: f32 = 1.1;
+
+        // board-trim
+        commands.spawn_bundle(SpriteBundle {
+            material: materials.add(Color::BLACK.into()),
+            transform: Transform {
+                translation:  Vec3::new(0., 0., 0.),
+                rotation:  Quat::IDENTITY,
+                scale: Vec3::ONE,
+            },
+            sprite: Sprite {
+                size: background_size * board_trim,
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .insert(BoardPart::Background);
+
+
+        // board
+        commands.spawn_bundle(SpriteBundle {
+            material: materials.add(Color::SILVER.into()),
+            transform: Transform {
+                translation:  Vec3::new(0., 0., 0.),
+                rotation:  Quat::IDENTITY,
+                scale: Vec3::ONE,
+            },
+            sprite: Sprite {
+                size: background_size,
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .insert(BoardPart::Background);
+
+        // draw board line
+        let thinkness = 5.;
+        for x in 0..board_size.x {
+            let x = utils::map_range(x as f32, 0.0, (board_size.x - 1) as f32, -size / 2., size / 2.);
+            commands.spawn_bundle(SpriteBundle {
+                material: materials.add(Color::BLACK.into()),
                 transform: Transform {
-                    translation: Vec3::new(1920.0 * 0.5 + 30.0 * 43.0, -1280.0 * 0.5 - 100.0, 0.3),
-                    rotation: Quat::IDENTITY,
-                    scale: Vec3::splat(3.0),
+                    translation:  Vec3::new(x, 0., 0.),
+                    rotation:  Quat::IDENTITY,
+                    scale: Vec3::ONE,
                 },
-                material: materials.add(ColorMaterial::modulated_texture(
-                    mountain_texture2,
-                    Color::rgb(0.26, 0.26, 0.26),
-                )),
+                sprite: Sprite {
+                    size: Vec2::new(thinkness, size ),
+                    ..Default::default()
+                },
                 ..Default::default()
             })
-            .insert(OffsceenDeletion)
-            .insert(Velocity(Vec2::new(-400.0, 0.0)));
+            .insert(BoardPart::Background);
+        }
+
+        for y in 0..board_size.y {
+            let y = utils::map_range(y as f32, 0.0, (board_size.y - 1) as f32, -size / 2., size / 2.);
+            commands.spawn_bundle(SpriteBundle {
+                material: materials.add(Color::BLACK.into()),
+                transform: Transform {
+                    translation:  Vec3::new(0., y, 0.),
+                    rotation:  Quat::IDENTITY,
+                    scale: Vec3::ONE,
+                },
+                sprite: Sprite {
+                    size: Vec2::new(size, thinkness ),
+                    ..Default::default()
+                },
+                ..Default::default()
+            })
+            .insert(BoardPart::Background);
+        }
+        
+
+        // Setup the board positions
+        let cell_scale: f32 = 1.;
+        for cell_x in 0..board_size.x {
+            for cell_y in 0..board_size.y {
+
+                // Find cell positions
+                let x = utils::map_range(cell_x as f32, 0.0, (board_size.x - 1) as f32, -size / 2., size / 2.);
+                let y = utils::map_range(cell_y as f32, 0.0, (board_size.y - 1) as f32, -size / 2., size / 2.);
+
+                // Create board peice
+                commands.spawn_bundle(SpriteBundle {
+                    material: materials.add(Color::RED.into()),
+                    transform: Transform {
+                        translation:  Vec3::new(x,  y , 0.),
+                        rotation:  Quat::IDENTITY,
+                        scale: Vec3::ONE,
+                    },
+                    sprite: Sprite {
+                        size: cell_size * cell_scale,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                .insert(BoardPart::Cell { x: cell_x, y: cell_y });
+                //println!("x: {}, y: {}", cell_x, cell_y);
+
+            }
+        }
     }
-}
+

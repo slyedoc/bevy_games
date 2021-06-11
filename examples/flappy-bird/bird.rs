@@ -52,8 +52,6 @@ impl Plugin for BirdPlugin {
     }
 }
 
-
-
 fn bird_input_playing(
     jump_height: Res<JumpHeight>,
     keyboard_input: Res<Input<KeyCode>>,
@@ -134,6 +132,7 @@ fn player_collision_system(
                 break;
             }
         }
+
         if did_collide {
             game_over_writer.send(GameOverEvent);
         }
