@@ -28,8 +28,8 @@ fn cloud_spawn_system(
 ) {
     let mut rng = thread_rng();
     let cloud_texture = match rng.gen_bool(0.5) {
-        true => asset_server.load("cloud_1.png"),
-        false => asset_server.load("cloud_2.png"),
+        true => asset_server.load("flappy-bird/cloud_1.png"),
+        false => asset_server.load("flappy-bird/cloud_2.png"),
     };
 
     cloud_timer

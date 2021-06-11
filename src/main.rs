@@ -1,16 +1,17 @@
+mod game_state;
+use game_state::*;
 use bevy::{core::FixedTimestep, prelude::*};
 mod plugins;
 use plugins::{
-    *,
     fps::*,
+    window_config::*,
 };
 
-//const TIME_STEP: f32 = 1.0 / 60.0;
 fn main() {
     App::build()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(window_config::WindowConfigPlugin)
-        .add_plugin(FPSPlugin)
+
+        .add_plugin(WindowConfigPlugin)
+        //.add_plugin(FPSPlugin)
         .insert_resource(WindowDescriptor {
             title: "Patrick Rust Heaven".to_string(),
             ..Default::default()
@@ -24,8 +25,21 @@ fn main() {
         //         // .with_system(ball_collision_system.system())
         //         // .with_system(ball_movement_system.system()),
         // )
+        .add_plugins(DefaultPlugins)
         .run();
 }
+
+struct Cell {
+    height: f32,
+}
+
+#[derive(Default)]
+struct Game {
+    board: Vec<Vec<Cell>>,
+}
+
+const BOARD_SIZE_I: usize = 14;
+const BOARD_SIZE_J: usize = 21;
 
 struct Board;
 

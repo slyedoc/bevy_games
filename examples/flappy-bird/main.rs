@@ -59,11 +59,11 @@ fn setup(mut commands: Commands) {
 }
 
 fn menu_setup(
-    mut commands: Commands,  
+    mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let start_texture_handle = asset_server.load("SpaceToStart.png");
+    let start_texture_handle = asset_server.load("flappy-bird/SpaceToStart.png");
 
     commands
         // Start Screen
@@ -161,7 +161,7 @@ fn dead_setup(
     gamedata: Res<GameData>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let game_over_texture_handle = asset_server.load("GameOverText.png");
+    let game_over_texture_handle = asset_server.load("flappy-bird/GameOverText.png");
 
     commands
         .spawn_bundle(SpriteBundle {

@@ -101,8 +101,10 @@ fn pipe_system_update(
         // to world units
         new_center_pos *= 1280.0 * 0.5;
 
-        let pipe_texture_handle = asset_server.load("pipe.png");
-        let pipe_texture_handle2 = asset_server.load("pipe.png");
+        // TODO: shouldnt need to duplicate this
+
+        let pipe_texture_handle = asset_server.load("flappy-bird/pipe.png");
+        let pipe_texture_handle2 = asset_server.load("flappy-bird/pipe.png");
 
         let pipe_offset_y = (6.0 * 128.0) * 0.5;
         let pipe_offset_x = (6.0 * 32.0) * 0.5;

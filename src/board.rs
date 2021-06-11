@@ -1,13 +1,4 @@
-use crate::bounds_deletion;
-use crate::physics;
-use bevy::prelude::*;
-use bounds_deletion::*;
-use physics::*;
-
-// Spawn mountains with a delay
-pub struct MountainTimer(pub Timer);
-
-pub struct MountainPlugin;
+pub struct BoardPlugin;
 
 impl Plugin for MountainPlugin {
     fn build(&self, app: &mut AppBuilder) {
@@ -26,8 +17,8 @@ fn mountain_spawn_system(
     mountain_timer.0.tick(time.delta());
     if mountain_timer.0.finished() {
         // TODO: find correct way to copy handle for "use after moved" error
-        let mountain_texture: Handle<Texture> = asset_server.load("flappy-bird/mountain.png");
-        let mountain_texture2: Handle<Texture> = asset_server.load("flappy-bird/mountain.png");
+        let mountain_texture: Handle<Texture> = asset_server.load("mountain.png");
+        let mountain_texture2: Handle<Texture> = asset_server.load("mountain.png");
         commands
             .spawn_bundle(SpriteBundle {
                 transform: Transform {
