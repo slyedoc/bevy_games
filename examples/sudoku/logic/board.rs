@@ -27,7 +27,7 @@ impl Plugin for LogicPlugin {
 }
 
 pub struct Cell;
-#[derive(PartialEq, Eq, Hash, Clone, Debug)]
+#[derive(PartialEq, Eq, Hash, Clone)]
 pub struct Coordinates {
     /// Between 1 and 9, counted from top to bottom
     pub row: u8,
@@ -53,7 +53,7 @@ impl Coordinates {
 }
 
 /// The number(s) marked inside of each cell
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum Value {
     /// No value is filled in this cell
     Empty,
@@ -90,7 +90,7 @@ pub mod marks {
         fn update(&self, num: u8) -> Self;
     }
     /// The value of this cell could be any of the possibilities written in the center of the cell
-    #[derive(PartialEq, Eq, Clone, Default, Debug)]
+    #[derive(PartialEq, Eq, Clone, Default)]
     pub struct CenterMarks(HashSet<u8>);
 
     impl Marks for CenterMarks {
@@ -125,7 +125,7 @@ pub mod marks {
     }
 
     /// The values marked in the corner of this cell must occur in these cells within the square
-    #[derive(PartialEq, Eq, Clone, Default, Debug)]
+    #[derive(PartialEq, Eq, Clone, Default)]
     pub struct CornerMarks(HashSet<u8>);
 
     impl Marks for CornerMarks {

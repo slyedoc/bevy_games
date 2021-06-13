@@ -19,6 +19,13 @@ This is a playground for learning Bevy and to play more with rust.
 
 - pong ***UNFINISHED***
 
+- sudoku
+  - from [Alice Cecile](https://github.com/alice-i-cecile) [repo](https://github.com/Leafwing-Studios/bevy-sudoku)
+  - This was for a [user experience report](https://github.com/bevyengine/bevy/discussions/2235)
+  - Only required a little update to get running on main branch
+  - Really cool button state system [puzzle_button](https://github.com/Leafwing-Studios/bevy-sudoku/blob/ui-game-grid/src/input/buttons.rs#L17) "which stores marker components on the system and then pipes them around as events"
+  - arranged apps by logic / graphics / input, looks promising
+
 ## Resources
 
 [bevy docs](https://docs.rs/bevy/0.5.0/bevy/index.html) |  [bevy cheatbook](https://bevy-cheatbook.github.io/) | [bevy examples](https://github.com/bevyengine/bevy/tree/main/examples)
