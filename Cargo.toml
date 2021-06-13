@@ -13,6 +13,7 @@ ron = "0.6.4"
 serde = "1.0.126"
 anyhow = "1.0"
 rand = "0.8.3"
+bevy_rapier2d = "0.9.0"
 
 # For sudoku example
 sudoku = "0.7.0"
