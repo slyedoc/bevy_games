@@ -1,4 +1,3 @@
-
 mod fps;
 mod ron_asset;
 mod window_config;

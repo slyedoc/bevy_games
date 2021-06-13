@@ -7,8 +7,12 @@ edition = "2018"
 
 [dependencies]
 bevy = { version = "0.5", features = ["dynamic"] }
+#bevy = {git = "https://github.com/BoxyUwU/bevy/", rev = "1a2abe883cfc0647462c1279af9a10abeef55b99"}
 bevy-inspector-egui = "0.5.1"
 ron = "0.6.4"
 serde = "1.0.126"
 anyhow = "1.0"
 rand = "0.8.3"
+
+# For sudoku example
+sudoku = "0.7.0"

@@ -28,7 +28,7 @@ fn clear(
     mut q: Query<(Entity, With<BoardPart>)>,
 ) {
     // did anyone say clear?
-    for r in clear.iter() {
+    for _ in clear.iter() {
         // destory existing board everything
         for (e, _) in q.iter_mut() {
             commands.entity(e).despawn();
@@ -36,7 +36,6 @@ fn clear(
     }
 }
 
-#[derive(Inspectable, Default)]
 pub struct BoardCell {
     pub x: u8,
     pub y: u8,
@@ -204,7 +203,7 @@ fn spawn_board(
     }
 }
 
-fn setup(mut commands: Commands, mut spawn: EventWriter<BoardSpawnEvent>) {
+fn setup(mut spawn: EventWriter<BoardSpawnEvent>) {
     // create the board on startup, will be event driven from there
     spawn.send(BoardSpawnEvent);
 }

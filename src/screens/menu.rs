@@ -35,7 +35,7 @@ impl Default for MenuData {
             board_y: 9,
             name: "".to_string(),
             color: Color::BLUE,
-            enabled: true
+            enabled: true,
         }
     }
 }
@@ -48,10 +48,7 @@ impl Plugin for MenuPlugin {
     }
 }
 
-fn update(
-    keyboard_input: Res<Input<KeyCode>>,
-    mut exit: EventWriter<AppExit>,
-) {
+fn update(keyboard_input: Res<Input<KeyCode>>, mut exit: EventWriter<AppExit>) {
     if keyboard_input.just_pressed(KeyCode::Escape) {
         exit.send(AppExit);
     }
