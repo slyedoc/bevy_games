@@ -16,10 +16,10 @@ Below are a collection of simple games from different sources I have been going 
 ```
 
 - snake
-  - Based on [mbuffet tutorial](https://mbuffett.com/posts/bevy-snake-tutorial/) and [repo](https://github.com/marcusbuffett/bevy_snake/)
+  - from [mbuffet tutorial](https://mbuffett.com/posts/bevy-snake-tutorial/) and [repo](https://github.com/marcusbuffett/bevy_snake/)
 
 - flappy-bird
-  - based on [drupalio repo](https://github.com/drupalio/flappy_bevy), updated from bevy 0.1.3, was great experence learning how bevy has changed and figuring out newer ways of handling things
+  - from [drupalio repo](https://github.com/drupalio/flappy_bevy), updated from bevy 0.1.3, was great experence learning how bevy has changed and updating it
 
 - sudoku
   - from [Alice Cecile](https://github.com/alice-i-cecile) [repo](https://github.com/Leafwing-Studios/bevy-sudoku)
@@ -37,6 +37,10 @@ Below are a collection of simple games from different sources I have been going 
 
 - chess
   - from [repo](https://github.com/guimcaballero/bevy_chess) by [guimcaballero](https://github.com/guimcaballero) with [tutorial](https://caballerocoll.com/blog/bevy-chess-tutorial/)
+
+- rhythm *inprogress^
+  - from [repo](https://github.com/guimcaballero/bevy_rhythm) by [Guim Caballero](https://github.com/guimcaballero) with [tutorial](https://caballerocoll.com/blog/bevy-rhythm-game/)
+  - 
 
 ## Resources
 
