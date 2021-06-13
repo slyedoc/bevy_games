@@ -38,7 +38,7 @@ Below are a collection of simple games from different sources I have been going 
 - chess
   - from [repo](https://github.com/guimcaballero/bevy_chess) by [guimcaballero](https://github.com/guimcaballero) with [tutorial](https://caballerocoll.com/blog/bevy-chess-tutorial/)
 
-- rhythm *inprogress^
+- rhythm *inprogress*
   - from [repo](https://github.com/guimcaballero/bevy_rhythm) by [Guim Caballero](https://github.com/guimcaballero) with [tutorial](https://caballerocoll.com/blog/bevy-rhythm-game/)
   - 
 
